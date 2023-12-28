@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -141,15 +142,33 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Download',
+            child: const Icon(Icons.download),
+          ),
+          FloatingActionButton(
+            onPressed: _shareFile,
+            tooltip: 'Share',
+            child: const Icon(Icons.share),
+          ),
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
   Future<Directory> getDirectory() async{
     return await getExternalStorageDirectory() ?? await getTemporaryDirectory();
+  }
+
+  void _shareFile() async{
+    final dir = await getDirectory();
+    final path = "${dir.path}/$_counter.jpg";
+    print(path);
+    Share.shareFiles(['$path'], text: 'Great picture');
   }
 }
